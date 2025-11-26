@@ -59,7 +59,7 @@ pipeline {
                     
                     dependencyCheck 
                         // SINTAXIS CRÍTICA CORREGIDA: Todo en una línea y alineado.
-                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500",
+                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalizer --enableExperimental --enableRetired --nvdApiDelay 3500",
                         odcInstallation: 'DependecyCheck',
                         nvdApiKey: env.NVD_API_KEY
                 }
