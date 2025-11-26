@@ -54,21 +54,19 @@ pipeline {
         }
 
         // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
-        // ¡Esta es la etapa corregida!
-        stage('Dependency Check') {
-            steps {
-                // Inyecta la clave API de forma segura
-                withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
-                    
-                    dependencyCheck 
-                        // Se añade --disableAssemblyAnalyzer (soluciona el error de .NET)
-                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
-                        odcInstallation: 'DependencyCheck',
-                        // Se usa el argumento dedicado 'nvdApiKey' (soluciona la advertencia de seguridad)
-                        nvdApiKey: env.NVD_API_KEY 
-                }
-            }
+stage('Dependency Check') {
+    steps {
+        // Inyecta la clave API de forma segura
+        withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
+            
+            dependencyCheck 
+                // SOLUCIÓN: Una sola línea para la cadena de texto
+                additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
+                odcInstallation: 'DependencyCheck',
+                nvdApiKey: env.NVD_API_KEY 
         }
+    }
+}
 
         // --- Etapa 5: Publicación de Informes ---
         stage('Publish Reports') {
