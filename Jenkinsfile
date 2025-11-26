@@ -48,17 +48,19 @@ pipeline {
             }
         }
 
-        stage('Dependency Check') {
-        steps {
-            // Usamos withCredentials para obtener el valor del Texto Secreto
-            withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
-                
-                // Ejecutamos el step dependencyCheck
-                dependencyCheck additionalArguments: "--scan . --format HTML --out dependency-check-report --enableExperimental --enableRetired --nvdApiKey ${env.NVD_API_KEY} --nvdApiDelay 3500", 
-                                 odcInstallation: 'DependencyCheck'
-            }
+stage('Dependency Check') {
+    steps {
+        withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
+            
+            dependencyCheck 
+                 // Se desactiva el analizador de .NET Assembly, ya que no lo necesitas
+                 additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
+                 odcInstallation: 'DependencyCheck',
+                 // Se usa el argumento dedicado del plugin, eliminando el riesgo de exposición
+                 nvdApiKey: env.NVD_API_KEY 
         }
     }
+}
 
         stage('Publish Reports') {
             steps {
