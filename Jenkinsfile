@@ -50,22 +50,19 @@ pipeline {
                 }
             }
         }
-
-        // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
-        // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
+// --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
         stage('Dependency Check') {
             steps {
                 withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
                     
                     dependencyCheck 
-                        // ¡USAR TRIPLE COMILLA Y SIN ESPACIOS AL INICIO!
-                        additionalArguments: """--scan . --format HTML --out dependency-check-report --disableAssemblyAnalizer --enableExperimental --enableRetired --nvdApiDelay 3500""", 
+                        // REESCRÍBELA MANUALMENTE si copiar falla, y usa SOLO COMILLAS DOBLES (")
+                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalizer --enableExperimental --enableRetired --nvdApiDelay 3500", 
                         odcInstallation: 'DependencyCheck',
                         nvdApiKey: env.NVD_API_KEY 
                 }
             }
         }
-
         // --- Etapa 5: Publicación de Informes ---
         stage('Publish Reports') {
             steps {
