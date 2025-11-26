@@ -58,7 +58,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
                     
                     dependencyCheck 
-                        // SINTAXIS LIMPIA Y CORRECCIÓN ORTOGRÁFICA (Analyzer con 'z')
+                        // SINTAXIS CRÍTICA LIMPIA Y CORREGIDA:
                         additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
                         odcInstallation: 'DependencyCheck',
                         nvdApiKey: env.NVD_API_KEY 
