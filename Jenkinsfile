@@ -52,16 +52,16 @@ pipeline {
         }
 
         // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
+        // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
         stage('Dependency Check') {
             steps {
-                // Inyecta la clave API de forma segura
                 withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
                     
                     dependencyCheck 
-                        // SINTAXIS CRÍTICA CORREGIDA: Todo en una línea y alineado.
-                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalizer --enableExperimental --enableRetired --nvdApiDelay 3500",
-                        odcInstallation: 'DependecyCheck',
-                        nvdApiKey: env.NVD_API_KEY
+                        // ¡USAR TRIPLE COMILLA Y SIN ESPACIOS AL INICIO!
+                        additionalArguments: """--scan . --format HTML --out dependency-check-report --disableAssemblyAnalizer --enableExperimental --enableRetired --nvdApiDelay 3500""", 
+                        odcInstallation: 'DependencyCheck',
+                        nvdApiKey: env.NVD_API_KEY 
                 }
             }
         }
