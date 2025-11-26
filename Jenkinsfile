@@ -51,7 +51,7 @@ pipeline {
         stage('Dependency Check') {
         steps {
             // Usamos withCredentials para obtener el valor del Texto Secreto
-            withCredentials([string(credentialsId: 'nvdApiKey', variable: 'NVD_API_KEY')]) {
+            withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
                 
                 // Ejecutamos el step dependencyCheck
                 dependencyCheck additionalArguments: "--scan . --format HTML --out dependency-check-report --enableExperimental --enableRetired --nvdApiKey ${env.NVD_API_KEY} --nvdApiDelay 3500", 
