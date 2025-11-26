@@ -49,13 +49,16 @@ pipeline {
         }
 
         stage('Dependency Check') {
-            environment {
-                NVD_API_KEY = credentials('nvdApiKey')
-            }
-            steps {
-                dependencyCheck additionalArguments: "--scan . --format HTML --out dependency-check-report --enableExperimental --enableRetired --nvdApiKey ${NVD_API_KEY}", odcInstallation: 'DependencyCheck'
+        steps {
+            // Usamos withCredentials para obtener el valor del Texto Secreto
+            withCredentials([string(credentialsId: 'nvdApiKey', variable: 'NVD_API_KEY')]) {
+                
+                // Ejecutamos el step dependencyCheck
+                dependencyCheck additionalArguments: "--scan . --format HTML --out dependency-check-report --enableExperimental --enableRetired --nvdApiKey ${env.NVD_API_KEY} --nvdApiDelay 3500", 
+                                 odcInstallation: 'DependencyCheck'
             }
         }
+    }
 
         stage('Publish Reports') {
             steps {
