@@ -5,7 +5,6 @@ pipeline {
         PROJECT_NAME = "pipeline-test"
         SONARQUBE_URL = "http://localhost:9000"
         // Se usa la función credentials() para obtener la credencial y su ID
-        // Luego se inyecta la clave como variable de entorno
         SONARQUBE_TOKEN = credentials('sonar-token') 
         TARGET_URL = "http://172.23.41.49:5000"
     }
@@ -45,7 +44,6 @@ pipeline {
                                 -Dsonar.projectKey=%PROJECT_NAME% ^
                                 -Dsonar.sources=. ^
                                 -Dsonar.host.url=%SONARQUBE_URL% ^
-                                // Nota: %SONARQUBE_TOKEN% se inyecta de forma segura por withSonarQubeEnv
                                 -Dsonar.login=%SONARQUBE_TOKEN%
                         """
                     }
@@ -54,19 +52,19 @@ pipeline {
         }
 
         // --- Etapa 4: Análisis de Composición de Software (Dependency Check) ---
-stage('Dependency Check') {
-    steps {
-        // Inyecta la clave API de forma segura
-        withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
-            
-            dependencyCheck 
-                // SOLUCIÓN: Una sola línea para la cadena de texto
-                additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
-                odcInstallation: 'DependencyCheck',
-                nvdApiKey: env.NVD_API_KEY 
+        stage('Dependency Check') {
+            steps {
+                // Inyecta la clave API de forma segura
+                withCredentials([string(credentialsId: 'NVD_API_KEY_SECRET', variable: 'NVD_API_KEY')]) {
+                    
+                    dependencyCheck 
+                        // SINTAXIS CRÍTICA CORREGIDA: Todo en una línea y alineado.
+                        additionalArguments: "--scan . --format HTML --out dependency-check-report --disableAssemblyAnalyzer --enableExperimental --enableRetired --nvdApiDelay 3500", 
+                        odcInstallation: 'DependencyCheck',
+                        nvdApiKey: env.NVD_API_KEY 
+                }
+            }
         }
-    }
-}
 
         // --- Etapa 5: Publicación de Informes ---
         stage('Publish Reports') {
@@ -75,7 +73,6 @@ stage('Dependency Check') {
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    // Debe usar la misma carpeta y nombre de archivo generados por Dependency-Check
                     reportDir: 'dependency-check-report',
                     reportFiles: 'dependency-check-report.html',
                     reportName: 'OWASP Dependency Check Report'
